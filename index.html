@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Test: ¿Qué suele mover tus decisiones?</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; color: #333; margin: 0; padding: 20px; line-height: 1.6; }
+        .container { max-width: 700px; background: white; padding: 30px; margin: 20px auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1, h2 { color: #2c3e50; text-align: center; }
+        .intro { font-style: italic; color: #666; text-align: center; margin-bottom: 30px; }
+        .scale-legend { display: flex; justify-content: space-between; font-weight: bold; color: #7f8c8d; margin-bottom: 20px; font-size: 14px; background: #ecf0f1; padding: 10px; border-radius: 6px; }
+        .question { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        .question p { font-weight: 600; margin-bottom: 15px; font-size: 15px; }
+        .options { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 10px 20px; border-radius: 6px; }
+        .radio-group { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        input[type="radio"] { margin-bottom: 5px; transform: scale(1.2); cursor: pointer; }
+        .radio-label { font-size: 12px; color: #555; }
+        button { width: 100%; background: #3498db; color: white; border: none; padding: 14px; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 15px; transition: 0.2s; }
+        button:hover { background: #2980b9; }
+        
+        /* Estilos de Resultados */
+        .result-box { display: none; padding: 25px; border-radius: 8px; margin-top: 20px; }
+        .result-box h3 { font-size: 24px; margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 10px; }
+        .result-box h4 { color: #2c3e50; margin-top: 20px; margin-bottom: 10px; font-size: 18px; }
+        .result-box p { margin-bottom: 12px; font-size: 15px; }
+        
+        .profile-protector { background: #fdf2f2; color: #7f1d1d; border: 1px solid #f8b4b4; }
+        .profile-crecimiento { background: #fffbeb; color: #78350f; border: 1px solid #fde68a; }
+        .profile-disponible { background: #f0fdf4; color: #14532d; border: 1px solid #bbf7d0; }
+        
+        .admin-section { display: none; margin-top: 40px; padding-top: 20px; border-top: 3px double #ccc; }
+        .nav-btn { background: #7f8c8d; font-size: 12px; padding: 5px 10px; width: auto; float: right; margin-top: -50px; }
+        .stats-grid { display: flex; justify-content: space-around; margin-top: 20px; text-align: center; gap: 10px; }
+        .stat-card { background: #f8f9fa; padding: 15px; border-radius: 6px; width: 30%; border: 1px solid #ddd; }
+        .stat-number { font-size: 28px; font-weight: bold; color: #2c3e50; }
+        
+        @media (max-width: 500px) {
+            .options { padding: 10px; }
+            .radio-label { display: none; }
+            .stats-grid { flex-direction: column; }
+            .stat-card { width: 100%; margin-bottom: 10px; box-sizing: border-box; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <button class="nav-btn" onclick="toggleAdmin()">⚙️ Admin</button>
+    
+    <div id="test-view">
+        <h1>¿Qué suele mover tus decisiones?</h1>
+        <p class="intro">Califica cada afirmación siendo lo más honesto posible contigo mismo.</p>
+        
+        <div class="scale-legend">
+            <span>1 = Nunca</span>
+            <span>2 = Casi Nunca</span>
+            <span>3 = A Veces</span>
+            <span>4 = Casi Siempre</span>
+            <span>5 = Siempre</span>
+        </div>
+        
+        <form id="quiz-form">
+            <div id="questions-container"></div>
+            <button type="submit">Ver mi diagnóstico</button>
+        </form>
+
+        <div id="result" class="result-box">
+            <div id="result-content"></div>
+            <button onclick="resetTest()" style="background:#95a5a6; width:auto; padding:10px 20px; margin-top: 25px; display: block; margin-left: auto; margin-right: auto;">Hacer de nuevo</button>
+        </div>
+    </div>
+
+    <div id="admin-view" class="admin-section">
+        <h2>Panel General del Administrador</h2>
+        <p style="text-align:center; color:#666;">Resultados acumulados de todas las personas que respondieron.</p>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <p>❤️ Protector</p>
+                <div class="stat-number" id="count-protector">0</div>
+            </div>
+            <div class="stat-card">
+                <p>🌱 En Crecimiento</p>
+                <div class="stat-number" id="count-crecimiento">0</div>
+            </div>
+            <div class="stat-card">
+                <p>🙌 Disponible</p>
+                <div class="stat-number" id="count-disponible">0</div>
+            </div>
+        </div>
+        <button onclick="clearAdminData()" style="background:#e74c3c; margin-top:30px;">Reiniciar Contador General</button>
+    </div>
+</div>
+
+<script>
+    const afirmaciones = [
+        "Cuando participo en una actividad, necesito sentir que valió la pena para mí.",
+        "Me cuesta disfrutar algo cuando siento que mi esfuerzo pasa desapercibido.",
+        "Antes de comprometerme con algo, suelo pensar cuánto tiempo o energía me va a demandar.",
+        "Me resulta más fácil acercarme a personas con las que tengo cosas en común.",
+        "Si alguien hace algo mejor que yo, me cuesta no compararme.",
+        "Cuando tengo un problema, me cuesta prestar atención a los problemas de otros.",
+        "Disfruto más cuando todo sale como lo había planeado.",
+        "Me cuesta pedir ayuda cuando la necesito.",
+        "A menudo pienso cómo podrían mejorar las personas o los grupos de los que formo parte."
+    ];
+
+    const perfilesData = {
+        protector: `
+            <h3>❤️ Corazón Protector</h3>
+            <h4>Diagnóstico</h4>
+            <p>Sueles invertir mucha energía en proteger tu tiempo, tu tranquilidad, tu reconocimiento o tu seguridad. No significa que seas egoísta. Con frecuencia refleja un corazón que siente que debe sostener muchas cosas por sí mismo.</p>
+            <h4>¿Cómo puede afectar tu relación con Dios?</h4>
+            <p>Puedes terminar viviendo más desde la preocupación que desde la confianza. Oras menos. Descansas menos. Te cuesta creer que Dios realmente cuidará de tus necesidades. Sin darte cuenta, empiezas a depender más de tu control que de Su gracia.</p>
+            <h4>¿Cómo puede afectar tu relación con la comunidad?</h4>
+            <p>Puedes participar sin involucrarte profundamente. Es más fácil observar que comprometerte. Las personas pueden sentir que estás presente, pero no verdaderamente disponible. La comunidad pierde una parte de lo que Dios quería aportar a través de ti.</p>
+            <h4>¿Cómo puede afectar tu servicio?</h4>
+            <p>Antes de servir, tu corazón suele preguntarse:<br>
+            "¿Tengo tiempo?"<br>
+            "¿Vale la pena?"<br>
+            "¿Y quién piensa en mí?"<br>
+            Eso hace que muchas oportunidades pasen de largo. No porque no ames a las personas. Sino porque primero necesitas sentirte seguro.</p>
+            <h4>Lo que dice el evangelio</h4>
+            <p>Jesús ya hizo por ti lo que tú nunca podrías hacer. Tu identidad ya no depende de demostrar, controlar o proteger todo. Puedes descansar. Cuando sabes que Dios cuida de ti, eres libre para comenzar a cuidar de otros.</p>
+        `,
+        crecimiento: `
+            <h3>🌱 Corazón en crecimiento</h3>
+            <h4>Diagnóstico</h4>
+            <p>Hay señales claras de que Dios está formando un corazón humilde en ti. Sin embargo, todavía aparecen momentos donde el miedo, la comodidad o el deseo de reconocimiento vuelven a ocupar el centro. Eso nos pasa a todos. La diferencia es que ahora puedes reconocerlo.</p>
+            <h4>¿Cómo puede afectar tu relación con Dios?</h4>
+            <p>Puedes alternar entre confiar plenamente en Dios y volver a depender de tus propias fuerzas. Eso produce una vida espiritual con altibajos.</p>
+            <h4>¿Cómo puede afectar tu relación con la comunidad?</h4>
+            <p>Hay personas que reciben mucho de ti. Pero también hay momentos donde te retraes cuando las cosas se vuelven difíciles. La comunidad necesita tu constancia.</p>
+            <h4>¿Cómo puede afectar tu servicio?</h4>
+            <p>Sirves con alegría... pero a veces el cansancio, la comparación o la falta de reconocimiento apagan ese entusiasmo.</p>
+            <h4>Lo que dice el evangelio</h4>
+            <p>No necesitas demostrar nada. Cristo ya te aceptó. Ahora puedes servir desde la gratitud y no desde la obligación.</p>
+        `,
+        disponible: `
+            <h3>🙌 Corazón Disponible</h3>
+            <h4>Diagnóstico</h4>
+            <p>Tu tendencia natural es mirar más allá de tus propias necesidades. Eso refleja una vida que está siendo transformada por el evangelio. Pero recuerda: Un corazón humilde nunca deja de depender de la gracia.</p>
+            <h4>¿Cómo puede afectar tu relación con Dios?</h4>
+            <p>Existe el riesgo de comenzar a confiar en tu servicio más que en Cristo. El orgullo espiritual puede aparecer de manera muy sutil. Nunca dejes que hacer cosas para Dios reemplace estar con Dios.</p>
+            <h4>¿Cómo puede afectar tu relación con la comunidad?</h4>
+            <p>Las personas probablemente encuentren en ti apoyo, escucha y ejemplo. Tu actitud puede contagiar a otros. Dios puede usarte para fortalecer la unidad de la iglesia.</p>
+            <h4>¿Cómo puede afectar tu servicio?</h4>
+            <p>Tienes la capacidad de formar, acompañar y levantar a otras personas. El siguiente paso no es servir más. Es ayudar a que otros también aprendan a servir.</p>
+            <h4>Lo que dice el evangelio</h4>
+            <p>La humildad no consiste en pensar menos de ti. Consiste en recordar constantemente cuánto Cristo hizo por ti. Todo servicio nace de Su gracia.</p>
+        `
+    };
+
+    const container = document.getElementById('questions-container');
+    afirmaciones.forEach((texto, index) => {
+        let questionNumber = index + 1;
+        let html = `
+            <div class="question">
+                <p>${questionNumber}. ${texto}</p>
+                <div class="options">
+                    <label class="radio-group"><input type="radio" name="q${questionNumber}" value="1" required><span class="radio-label">1</span></label>
+                    <label class="radio-group"><input type="radio" name="q${questionNumber}" value="2"><span class="radio-label">2</span></label>
+                    <label class="radio-group"><input type="radio" name="q${questionNumber}" value="3"><span class="radio-label">3</span></label>
+                    <label class="radio-group"><input type="radio" name="q${questionNumber}" value="4"><span class="radio-label">4</span></label>
+                    <label class="radio-group"><input type="radio" name="q${questionNumber}" value="5"><span class="radio-label">5</span></label>
+                </div>
+            </div>
+        `;
+        container.innerHTML += html;
+    });
+
+    document.getElementById('quiz-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        let puntajeTotal = 0;
+        for(let i = 1; i <= afirmaciones.length; i++) {
+            let valor = parseInt(document.querySelector(`input[name="q${i}"]:checked`).value);
+            puntajeTotal += valor;
+        }
+        
+        let perfilFinal = "";
+        let claseCSS = "";
+        
+        if (puntajeTotal >= 30) {
+            perfilFinal = "protector";
+            claseCSS = "profile-protector";
+        } else if (puntajeTotal >= 19 && puntajeTotal <= 29) {
+            perfilFinal = "crecimiento";
+            claseCSS = "profile-crecimiento";
+        } else {
+            perfilFinal = "disponible";
+            claseCSS = "profile-disponible";
+        }
+        
+        saveToAdmin(perfilFinal);
+        
+        const resultDiv = document.getElementById('result');
+        const resultContent = document.getElementById('result-content');
+        
+        document.getElementById('quiz-form').style.display = 'none';
+        document.querySelector('.scale-legend').style.display = 'none';
+        
+        resultDiv.className = `result-box ${claseCSS}`;
+        resultContent.innerHTML = perfilesData[perfilFinal];
+        resultDiv.style.display = 'block';
+    });
+
+    function saveToAdmin(perfil) {
+        let currentCount = localStorage.getItem('test_v3_' + perfil) || 0;
+        localStorage.setItem('test_v3_' + perfil, parseInt(currentCount) + 1);
+        updateAdminDashboard();
+    }
+
+    function updateAdminDashboard() {
+        document.getElementById('count-protector').innerText = localStorage.getItem('test_v3_protector') || 0;
+        document.getElementById('count-crecimiento').innerText = localStorage.getItem('test_v3_crecimiento') || 0;
+        document.getElementById('count-disponible').innerText = localStorage.getItem('test_v3_disponible') || 0;
+    }
+
+    function toggleAdmin() {
+        const adminView = document.getElementById('admin-view');
+        if(adminView.style.display === 'none' || adminView.style.display === '') {
+            adminView.style.display = 'block';
+            updateAdminDashboard();
+            window.scrollTo(0, document.body.scrollHeight);
+        } else {
+            adminView.style.display = 'none';
+        }
+    }
+
+    function clearAdminData() {
+        if(confirm("¿Seguro que quieres reiniciar las estadísticas?")) {
+            localStorage.setItem('test_v3_protector', 0);
+            localStorage.setItem('test_v3_crecimiento', 0);
+            localStorage.setItem('test_v3_disponible', 0);
+            updateAdminDashboard();
+        }
+    }
+
+    function resetTest() {
+        document.getElementById('quiz-form').reset();
+        document.getElementById('quiz-form').style.display = 'block';
+        document.querySelector('.scale-legend').style.display = 'flex';
+        document.getElementById('result').style.display = 'none';
+        window.scrollTo(0, 0);
+    }
+
+    updateAdminDashboard();
+</script>
+
+</body>
+</html>
