@@ -146,9 +146,9 @@
             <h4>¿Cómo puede afectar tu relación con la comunidad?</h4>
             <p>Puedes participar sin involucrarte profundamente. Las personas pueden sentir que estás presente, pero no verdaderamente disponible. Este ensimismamiento hace que nos volvamos indiferentes a las enormes necesidades que nos rodean.</p>
             <h4>¿Cómo puede afectar tu servicio?</h4>
-            <p>Antes de servir, tu corazón suele preguntarse: "¿Vale la pena?" o "¿quién piensa en mí?". Eso hace que muchas oportunidades pasen de largo, porque primero necesitas sentirte seguro.</p>
+            <p>Antes de servir, tu corazón suele preguntarse: "¿Vale la pena?" o "¿quién piensa en mí?". A menudo, cuando servimos desde este lugar, <strong>buscamos una transacción</strong>: <em>"Como he hecho esto por Dios, Él debería hacer aquello por mí"</em>. Queremos servir para poder exigir algo a cambio.</p>
             <h4>Lo que dice el evangelio</h4>
-            <p>El consumismo espiritual tiene sus raíces en la falta de fe. Si vives ansioso, es tiempo de recordar que Dios proveerá para tus necesidades <strong>(Mateo 6:32)</strong>. Si te comparas constantemente, recuerda que Jesús es tu justicia <strong>(1 Corintios 1:30)</strong>. Y si te preocupa no ser reconocido, descansa en que Dios recompensa lo que se hace en secreto <strong>(Mateo 6:6)</strong> y se deleita en ti <strong>(Salmo 149:4)</strong>. Jesús nos llama a dejar de preocuparnos por nosotros mismos y buscar primeramente Su reino <strong>(Mateo 6:33)</strong>.</p>
+            <p>El consumismo espiritual tiene sus raíces en la falta de fe. Jesús nos llama a dejar de preocuparnos por nosotros mismos y buscar primeramente Su reino (Mateo 6:33). Acepta Su gracia en lugar de insistir en "pagar por un servicio". Cuando permitimos que Jesús nos sirva primero, somos humillados y verdaderamente liberados para amar a otros.</p>
         `,
         crecimiento: `
             <h3>🌱 Corazón en crecimiento</h3>
@@ -161,7 +161,7 @@
             <h4>¿Cómo puede afectar tu servicio?</h4>
             <p>Sirves con alegría... pero a veces el cansancio, la comparación o la falta de reconocimiento apagan ese entusiasmo.</p>
             <h4>Lo que dice el evangelio</h4>
-            <p>Estás descubriendo la paradoja del evangelio: mientras más buscas satisfacer tus propias necesidades, menos satisfechas estarán. Pero cuando empiezas a vivir para los demás en lugar de vivir para ti mismo, descubres que Dios se ocupa generosamente de ti en el proceso. No necesitas demostrar nada, descansa en que Cristo ya te aceptó.</p>
+            <p>La humildad de espíritu no es algo meramente intelectual. La gracia tiene que llegar a lo más profundo para cambiarnos. <strong>Tenemos que reconocer nuestra resistencia a ser servidos por Jesús.</strong> A veces nos incomoda un Dios que nos sirve, pero tenemos que "rendirnos" y permitirle que nos dé lo que necesitamos desesperadamente. Estás descubriendo esta paradoja: cuando dejas de vivir para ti y dejas que Él te atienda, descubres que Dios se ocupa generosamente de ti.</p>
         `,
         disponible: `
             <h3>🙌 Corazón Disponible</h3>
@@ -174,7 +174,7 @@
             <h4>¿Cómo puede afectar tu servicio?</h4>
             <p>Tienes la capacidad de formar, acompañar y levantar a otras personas. El siguiente paso no es servir más. Es ayudar a que otros también aprendan a servir.</p>
             <h4>Lo que dice el evangelio</h4>
-            <p>La gracia de Dios nos convierte en servidores. Esto significa renunciar alegremente a nuestros derechos para tratar de servir a Dios y a los demás. Esta actitud solo se desarrolla mirando a Jesús, quien <em>"siendo por naturaleza Dios, no consideró el ser igual a Dios como algo a qué aferrarse. Por el contrario, se rebajó voluntariamente, tomando la naturaleza de siervo"</em> <strong>(Filipenses 2:5-7)</strong>.</p>
+            <p>Jesús nos transforma de ser consumidores egoístas a siervos fieles. Por medio del evangelio, nos convertimos en personas libres que, voluntariamente, nos hacemos siervos por gratitud. Jesús es el ejemplo perfecto: <em>"Porque ni aun el Hijo del hombre vino para que le sirvan, sino para servir y para dar su vida en rescate por muchos"</em> (Marcos 10:45). Como siervos de Cristo, ahora vivimos para servir a los demás, por amor a Jesús y para la gloria de Dios.</p>
         `
     };
 
@@ -242,25 +242,25 @@
     });
 
     function saveToAdmin(perfil, puntaje) {
-        let currentCount = parseInt(localStorage.getItem('test_v5_' + perfil)) || 0;
-        localStorage.setItem('test_v5_' + perfil, currentCount + 1);
+        let currentCount = parseInt(localStorage.getItem('test_v6_' + perfil)) || 0;
+        localStorage.setItem('test_v6_' + perfil, currentCount + 1);
         
-        let sumPuntajes = parseInt(localStorage.getItem('test_v5_sumPuntajes')) || 0;
-        let totalTests = parseInt(localStorage.getItem('test_v5_totalTests')) || 0;
+        let sumPuntajes = parseInt(localStorage.getItem('test_v6_sumPuntajes')) || 0;
+        let totalTests = parseInt(localStorage.getItem('test_v6_totalTests')) || 0;
         
-        localStorage.setItem('test_v5_sumPuntajes', sumPuntajes + puntaje);
-        localStorage.setItem('test_v5_totalTests', totalTests + 1);
+        localStorage.setItem('test_v6_sumPuntajes', sumPuntajes + puntaje);
+        localStorage.setItem('test_v6_totalTests', totalTests + 1);
         
         updateAdminDashboard();
     }
 
     function updateAdminDashboard() {
-        document.getElementById('count-protector').innerText = localStorage.getItem('test_v5_protector') || 0;
-        document.getElementById('count-crecimiento').innerText = localStorage.getItem('test_v5_crecimiento') || 0;
-        document.getElementById('count-disponible').innerText = localStorage.getItem('test_v5_disponible') || 0;
+        document.getElementById('count-protector').innerText = localStorage.getItem('test_v6_protector') || 0;
+        document.getElementById('count-crecimiento').innerText = localStorage.getItem('test_v6_crecimiento') || 0;
+        document.getElementById('count-disponible').innerText = localStorage.getItem('test_v6_disponible') || 0;
         
-        let sumPuntajes = parseInt(localStorage.getItem('test_v5_sumPuntajes')) || 0;
-        let totalTests = parseInt(localStorage.getItem('test_v5_totalTests')) || 0;
+        let sumPuntajes = parseInt(localStorage.getItem('test_v6_sumPuntajes')) || 0;
+        let totalTests = parseInt(localStorage.getItem('test_v6_totalTests')) || 0;
         
         document.getElementById('total-tests-count').innerText = totalTests;
         
@@ -286,11 +286,11 @@
 
     function clearAdminData() {
         if(confirm("¿Seguro que quieres reiniciar las estadísticas? Esto pondrá todos los medidores y contadores en cero.")) {
-            localStorage.setItem('test_v5_protector', 0);
-            localStorage.setItem('test_v5_crecimiento', 0);
-            localStorage.setItem('test_v5_disponible', 0);
-            localStorage.setItem('test_v5_sumPuntajes', 0);
-            localStorage.setItem('test_v5_totalTests', 0);
+            localStorage.setItem('test_v6_protector', 0);
+            localStorage.setItem('test_v6_crecimiento', 0);
+            localStorage.setItem('test_v6_disponible', 0);
+            localStorage.setItem('test_v6_sumPuntajes', 0);
+            localStorage.setItem('test_v6_totalTests', 0);
             updateAdminDashboard();
         }
     }
